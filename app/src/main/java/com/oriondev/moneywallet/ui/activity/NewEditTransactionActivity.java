@@ -149,22 +149,34 @@ public class NewEditTransactionActivity extends NewEditItemActivity implements M
 
     private MoneyFormatter mMoneyFormatter = MoneyFormatter.getInstance();
 
+    private Timer timer;
     @Override
     public void onResume() {
         super.onResume();
 
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
 
             public void run() {
+                // When activity is focused (again), check if the necessary values are filled in
                 if (!mCategoryPicker.isSelected()) {
-                    mCategoryPicker.showPicker();
+                    mCategoryPicker.showPicker(); // Show category picker if category is still empty
                 } else if (mMoneyPicker.getCurrentMoney() == 0) {
-                    mMoneyPicker.showPicker();
+                    mMoneyPicker.showPicker(); // Show money picker if money is still zero
                 }
             }
 
-        }, 500);
+        }, 500); // Make a short delay before auto-showing a picker
+    }
+
+    @Override
+    public void onPause () {
+        if(timer != null) { // If the activity gets closed, canceling any running timers to auto-show pickers
+            timer.cancel();
+            timer = null;
+        }
+
+        super.onPause();
     }
 
     @Override
