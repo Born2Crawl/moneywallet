@@ -69,6 +69,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by andrea on 06/03/18.
  */
@@ -145,6 +148,26 @@ public class NewEditTransactionActivity extends NewEditItemActivity implements M
     private boolean mSavingCompleted = false;
 
     private MoneyFormatter mMoneyFormatter = MoneyFormatter.getInstance();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                if (!mWalletPicker.isSelected()) {
+                    mWalletPicker.showSingleWalletPicker();
+                } else if (!mCategoryPicker.isSelected()) {
+                    mCategoryPicker.showPicker();
+                } else if (mMoneyPicker.getCurrentMoney() == 0) {
+                    mMoneyPicker.showPicker();
+                }
+            }
+
+        }, 500);
+    }
 
     @Override
     protected void onCreateHeaderView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
