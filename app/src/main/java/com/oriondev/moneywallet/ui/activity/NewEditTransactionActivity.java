@@ -157,9 +157,7 @@ public class NewEditTransactionActivity extends NewEditItemActivity implements M
         timer.schedule(new TimerTask() {
 
             public void run() {
-                if (!mWalletPicker.isSelected()) {
-                    mWalletPicker.showSingleWalletPicker();
-                } else if (!mCategoryPicker.isSelected()) {
+                if (!mCategoryPicker.isSelected()) {
                     mCategoryPicker.showPicker();
                 } else if (mMoneyPicker.getCurrentMoney() == 0) {
                     mMoneyPicker.showPicker();
