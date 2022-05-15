@@ -59,6 +59,9 @@ import com.oriondev.moneywallet.utils.MoneyFormatter;
 
 import java.util.Date;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by andrea on 06/11/18.
  */
@@ -96,7 +99,37 @@ public class NewEditRecurrentTransactionActivity extends NewEditItemActivity imp
     private PlacePicker mPlacePicker;
 
     private MoneyFormatter mMoneyFormatter = MoneyFormatter.getInstance();
-    
+
+    private Timer timer;
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                // When activity is focused (again), check if the necessary values are filled in
+                if (!mCategoryPicker.isSelected()) {
+                    mCategoryPicker.showPicker(); // Show category picker if category is still empty
+                } else if (mMoneyPicker.getCurrentMoney() == 0) {
+                    mMoneyPicker.showPicker(); // Show money picker if money is still zero
+                }
+            }
+
+        }, 500); // Make a short delay before auto-showing a picker
+    }
+
+    @Override
+    public void onPause () {
+        if(timer != null) { // If the activity gets closed, canceling any running timers to auto-show pickers
+            timer.cancel();
+            timer = null;
+        }
+
+        super.onPause();
+    }
+
     @Override
     protected void onCreateHeaderView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_header_new_edit_money_item, parent, true);

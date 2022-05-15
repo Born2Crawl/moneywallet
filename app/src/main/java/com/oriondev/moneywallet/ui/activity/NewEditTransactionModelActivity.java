@@ -54,6 +54,9 @@ import com.oriondev.moneywallet.utils.DateUtils;
 import com.oriondev.moneywallet.utils.IconLoader;
 import com.oriondev.moneywallet.utils.MoneyFormatter;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by andrea on 14/03/18.
  */
@@ -87,6 +90,36 @@ public class NewEditTransactionModelActivity extends NewEditItemActivity impleme
     private PlacePicker mPlacePicker;
 
     private MoneyFormatter mMoneyFormatter = MoneyFormatter.getInstance();
+
+    private Timer timer;
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                // When activity is focused (again), check if the necessary values are filled in
+                if (!mCategoryPicker.isSelected()) {
+                    mCategoryPicker.showPicker(); // Show category picker if category is still empty
+                } else if (mMoneyPicker.getCurrentMoney() == 0) {
+                    mMoneyPicker.showPicker(); // Show money picker if money is still zero
+                }
+            }
+
+        }, 500); // Make a short delay before auto-showing a picker
+    }
+
+    @Override
+    public void onPause () {
+        if(timer != null) { // If the activity gets closed, canceling any running timers to auto-show pickers
+            timer.cancel();
+            timer = null;
+        }
+
+        super.onPause();
+    }
 
     @Override
     protected void onCreateHeaderView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
