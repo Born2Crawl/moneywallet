@@ -135,8 +135,9 @@ public class NewEditTransferActivity extends NewEditItemActivity  implements Cur
     private MoneyFormatter mMoneyFormatter = MoneyFormatter.getInstance();
 
     private Timer timer;
+
     @Override
-    public void onResume() {
+    public void onResume() { // Is not called when returning from a non-fullscreen wallet picker :(
         super.onResume();
 
         timer = new Timer();
@@ -144,6 +145,9 @@ public class NewEditTransferActivity extends NewEditItemActivity  implements Cur
 
             public void run() {
                 // When activity is focused (again), check if the necessary values are filled in
+                //if (!mWalletToPicker.isSelected()) {
+                //    mWalletToPicker.showSingleWalletPicker(); // Show category picker if category is still empty
+                //} else
                 if (mMoneyPicker.getCurrentMoney() == 0) {
                     mMoneyPicker.showPicker(); // Show money picker if money is still zero
                 }
